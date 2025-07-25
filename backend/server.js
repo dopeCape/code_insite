@@ -334,3 +334,5 @@ app.listen(PORT, () => {
   console.log(`🔗 Auth: http://localhost:${PORT}/auth/github`);
   console.log(`🔗 Frontend: ${process.env.FRONTEND_URL}`);
 });
+
+export default app
