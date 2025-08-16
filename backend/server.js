@@ -4,6 +4,7 @@ import GitHub from '@auth/express/providers/github';
 import jwt from 'jsonwebtoken';
 import axios from 'axios';
 import dotenv from 'dotenv';
+import dbConnect from './connectDb.js';
 dotenv.config();
 
 console.log('🔍 Environment Check:');
