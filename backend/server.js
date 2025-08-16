@@ -1,15 +1,11 @@
-// server.js
 import express from 'express';
-import mongoose from 'mongoose';
 import cors from 'cors';
-import { ExpressAuth } from '@auth/express';
 import GitHub from '@auth/express/providers/github';
 import jwt from 'jsonwebtoken';
 import axios from 'axios';
 import dotenv from 'dotenv';
 dotenv.config();
 
-// Debug: Check if environment variables are loaded
 console.log('🔍 Environment Check:');
 console.log('PORT:', process.env.PORT || 'NOT SET');
 console.log('MONGODB_URI:', process.env.MONGODB_URI ? 'SET' : 'NOT SET');
@@ -28,14 +24,23 @@ app.use(cors({
 }));
 app.use(express.json());
 
-// MongoDB Connection
-mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/codeinsight', {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-})
-  .then(() => console.log('✅ MongoDB Connected'))
-  .catch(err => console.error('❌ MongoDB Connection Error:', err));
+const ensureDbConnection = async (req, res, next) => {
+  try {
+    await dbConnect();
+    next();
+  } catch (error) {
+    console.error('❌ Database connection failed:', error);
+    res.status(500).json({
+      error: 'Database connection failed',
+      details: 'Unable to connect to database. Please try again later.'
+    });
+  }
+};
 
+// Apply database connection middleware to all routes that need it
+app.use('/api/github', ensureDbConnection);
+app.use('/api/dashboard', ensureDbConnection);
+app.use('/api/ai', ensureDbConnection);
 // Auth.js Configuration
 const authConfig = {
   providers: [
