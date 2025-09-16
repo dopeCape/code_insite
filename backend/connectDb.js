@@ -1,7 +1,12 @@
 // lib/dbConnect.js
 import mongoose from 'mongoose';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 const MONGODB_URI = process.env.MONGODB_URI;
+
+console.log(MONGODB_URI);
 
 if (!MONGODB_URI) {
   throw new Error('Please define the MONGODB_URI environment variable inside .env.local');
@@ -28,8 +33,6 @@ async function dbConnect() {
   // If we don't have a promise, create one
   if (!cached.promise) {
     const opts = {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
       bufferCommands: false, // Disable mongoose buffering
       maxPoolSize: 10, // Maintain up to 10 socket connections
       serverSelectionTimeoutMS: 5000, // Keep trying to send operations for 5 seconds
